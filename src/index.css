@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Myeongjo:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --color-church-pink: #FFD6E0;
+    --color-church-purple: #D6C6F0;
+    --color-church-text: #4A4A4A;
+    --color-church-accent: #D95585;
+    --font-sans: "Gowun Dodum", sans-serif;
+    --font-serif: "Nanum Myeongjo", serif;
+}
+
+body {
+    font-family: var(--font-sans);
+    color: var(--color-church-text);
+}

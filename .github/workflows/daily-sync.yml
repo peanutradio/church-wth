@@ -1,0 +1,29 @@
+name: Daily Content Sync
+
+on:
+  schedule:
+    # 6:05 AM KST = 9:05 PM UTC (previous day)
+    - cron: '5 21 * * *'
+    # 8:00 PM KST = 11:00 AM UTC (same day)
+    - cron: '0 11 * * *'
+  workflow_dispatch:  # Allow manual trigger from GitHub UI
+
+jobs:
+  sync-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Sync YouTube Videos
+        run: |
+          curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-youtube" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json"
+      
+      - name: Sync Google Drive Bulletins
+        run: |
+          curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-drive" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json"
+      
+      - name: Log completion
+        run: echo "Content sync completed at $(date)"

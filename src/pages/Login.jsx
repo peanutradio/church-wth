@@ -147,16 +147,7 @@ const Login = () => {
 
                     {/* Google Login */}
                     <button
-                        onClick={() => {
-                            const userAgent = navigator.userAgent.toLowerCase();
-                            const isInApp = userAgent.includes('kakao') || userAgent.includes('instagram') || userAgent.includes('naver');
-
-                            if (isInApp) {
-                                alert('구글 보안 정책상 카카오톡/인스타그램 등 인앱 브라우저에서는 로그인이 제한됩니다.\n\n우측 상단(또는 하단) 메뉴를 눌러 "다른 브라우저로 열기"를 선택한 후 다시 시도해주세요.');
-                            } else {
-                                handleSocialLogin('google');
-                            }
-                        }}
+                        onClick={() => handleSocialLogin('google')}
                         className="w-full py-3.5 px-4 rounded-lg bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-3 relative"
                     >
                         <svg className="w-5 h-5 absolute left-4" viewBox="0 0 24 24">

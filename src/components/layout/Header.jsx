@@ -90,7 +90,7 @@ const Header = () => {
                         <button
                             key={item.id}
                             onClick={() => scrollToSection(item.id)}
-                            className={`text-sm font-medium hover:opacity-70 transition-opacity ${isScrolled ? 'text-gray-700' : 'text-gray-800'
+                            className={`text-base font-medium hover:opacity-70 transition-opacity ${isScrolled ? 'text-gray-700' : 'text-gray-800'
                                 }`}
                         >
                             {item.label}
@@ -98,14 +98,14 @@ const Header = () => {
                     ))}
                     <Link
                         to="/news"
-                        className={`text-sm font-medium hover:opacity-70 transition-opacity ${isScrolled ? 'text-gray-700' : 'text-gray-800'
+                        className={`text-base font-medium hover:opacity-70 transition-opacity ${isScrolled ? 'text-gray-700' : 'text-gray-800'
                             }`}
                     >
                         교회 소식
                     </Link>
                     <Link
                         to="/sermons"
-                        className={`text-sm font-medium hover:opacity-70 transition-opacity ${isScrolled ? 'text-gray-700' : 'text-gray-800'
+                        className={`text-base font-medium hover:opacity-70 transition-opacity ${isScrolled ? 'text-gray-700' : 'text-gray-800'
                             }`}
                     >
                         말씀
@@ -114,7 +114,7 @@ const Header = () => {
                     {isAdmin && (
                         <Link
                             to="/admin"
-                            className={`text-sm font-bold text-church-accent hover:opacity-70 transition-opacity`}
+                            className={`text-base font-bold text-church-accent hover:opacity-70 transition-opacity`}
                         >
                             관리자
                         </Link>
@@ -123,9 +123,9 @@ const Header = () => {
                     {user ? (
                         <button
                             onClick={handleLogout}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${isScrolled
-                                    ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                                    : 'bg-white/50 text-gray-900 hover:bg-white/80'
+                            className={`px-4 py-2 rounded-full text-base font-medium transition-colors ${isScrolled
+                                ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                : 'bg-white/50 text-gray-900 hover:bg-white/80'
                                 }`}
                         >
                             로그아웃
@@ -133,9 +133,9 @@ const Header = () => {
                     ) : (
                         <Link
                             to="/login"
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${isScrolled
-                                    ? 'bg-church-purple text-white hover:bg-purple-400'
-                                    : 'bg-white/50 text-gray-900 hover:bg-white/80'
+                            className={`px-4 py-2 rounded-full text-base font-medium transition-colors ${isScrolled
+                                ? 'bg-church-purple text-white hover:bg-purple-400'
+                                : 'bg-white/50 text-gray-900 hover:bg-white/80'
                                 }`}
                         >
                             로그인
@@ -149,9 +149,9 @@ const Header = () => {
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
                     {isMobileMenuOpen ? (
-                        <X className="text-gray-900" />
+                        <X className="text-gray-900 w-8 h-8" />
                     ) : (
-                        <Menu className="text-gray-900" />
+                        <Menu className="text-gray-900 w-8 h-8" />
                     )}
                 </button>
             </div>
@@ -163,21 +163,21 @@ const Header = () => {
                         <button
                             key={item.id}
                             onClick={() => scrollToSection(item.id)}
-                            className="text-left text-gray-700 font-medium py-2"
+                            className="text-left text-gray-700 font-medium text-lg py-2"
                         >
                             {item.label}
                         </button>
                     ))}
                     <Link
                         to="/news"
-                        className="text-left text-gray-700 font-medium py-2"
+                        className="text-left text-gray-700 font-medium text-lg py-2"
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
                         교회 소식
                     </Link>
                     <Link
                         to="/sermons"
-                        className="text-left text-gray-700 font-medium py-2"
+                        className="text-left text-gray-700 font-medium text-lg py-2"
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
                         말씀
@@ -185,7 +185,7 @@ const Header = () => {
                     {isAdmin && (
                         <Link
                             to="/admin"
-                            className="text-left text-church-accent font-bold py-2"
+                            className="text-left text-church-accent font-bold text-lg py-2"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             관리자 페이지
@@ -194,14 +194,14 @@ const Header = () => {
                     {user ? (
                         <button
                             onClick={handleLogout}
-                            className="text-center bg-gray-200 text-gray-800 py-2 rounded-lg"
+                            className="text-center bg-gray-200 text-gray-800 text-lg py-3 rounded-lg"
                         >
                             로그아웃
                         </button>
                     ) : (
                         <Link
                             to="/login"
-                            className="text-center bg-church-purple text-white py-2 rounded-lg"
+                            className="text-center bg-church-purple text-white text-lg py-3 rounded-lg"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             로그인

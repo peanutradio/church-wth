@@ -143,16 +143,7 @@ const Login = () => {
                         카카오톡으로 시작하기
                     </button>
 
-                    {/* Naver Login */}
-                    <button
-                        onClick={() => handleSocialLogin('naver')}
-                        className="w-full py-3.5 px-4 rounded-lg bg-[#03C75A] text-white font-medium hover:bg-[#02B150] transition-colors flex items-center justify-center gap-3 relative"
-                    >
-                        <svg className="w-4 h-4 absolute left-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M16.05 13.36L8.6 4H3v16h5.4v-9.36l7.45 9.36H21V4h-4.95z" />
-                        </svg>
-                        네이버로 시작하기
-                    </button>
+
 
                     {/* Google Login */}
                     <button

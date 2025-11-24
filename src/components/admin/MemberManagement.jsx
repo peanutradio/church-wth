@@ -75,23 +75,34 @@ const MemberManagement = () => {
         setCurrentPage(1);
     };
 
-    const handleRoleChange = async (memberId, newRole) => {
-        if (!window.confirm(`권한을 "${newRole}"로 변경하시겠습니까?`)) return;
+    const handleRoleChange = (memberId, newRole) => {
+        // Mobile fix: Use setTimeout to allow the native select picker to close
+        // before showing the alert/confirm dialog.
+        setTimeout(async () => {
+            if (!window.confirm(`권한을 "${newRole}"로 변경하시겠습니까?`)) {
+                // If cancelled, we need to force a re-render to revert the select value
+                // because the browser might have visually updated it.
+                // Re-fetching is the easiest way to ensure consistency.
+                fetchMembers();
+                return;
+            }
 
-        try {
-            const { error } = await supabase
-                .from('profiles')
-                .update({ role: newRole })
-                .eq('id', memberId);
+            try {
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({ role: newRole })
+                    .eq('id', memberId);
 
-            if (error) throw error;
+                if (error) throw error;
 
-            alert('권한이 변경되었습니다.');
-            fetchMembers();
-        } catch (error) {
-            console.error('Error updating role:', error);
-            alert('권한 변경에 실패했습니다.');
-        }
+                alert('권한이 변경되었습니다.');
+                fetchMembers();
+            } catch (error) {
+                console.error('Error updating role:', error);
+                alert('권한 변경에 실패했습니다.');
+                fetchMembers(); // Revert on error too
+            }
+        }, 100);
     };
 
     const downloadExcel = () => {

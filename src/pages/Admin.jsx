@@ -119,13 +119,6 @@ const Admin = () => {
                 throw new Error('YouTube API 설정이 누락되었습니다. .env 파일을 확인해주세요.');
             }
 
-            // 1. Fetch existing sermons to avoid duplicates
-            const { data: existingSermons } = await supabase
-                .from('posts_sermons')
-                .select('youtube_url');
-
-            const existingUrls = new Set(existingSermons?.map(s => s.youtube_url) || []);
-
             // 2. Fetch from YouTube Playlists (with pagination to get ALL videos)
             const fetchPlaylistVideos = async (playlistId, defaultPreacher) => {
                 let allItems = [];
@@ -163,30 +156,31 @@ const Admin = () => {
                         youtube_url: url,
                         preacher: defaultPreacher,
                         preached_at: item.snippet.publishedAt.split('T')[0], // YYYY-MM-DD
-                        video_id: videoId
+                        // video_id is not needed for DB, but used for key if needed. 
+                        // We use youtube_url as unique key.
                     };
-                }).filter(video => !existingUrls.has(video.youtube_url));
+                });
             };
 
             const sundayVideos = await fetchPlaylistVideos(PLAYLIST_SUNDAY, '주일설교');
             const morningVideos = await fetchPlaylistVideos(PLAYLIST_MORNING, '새벽설교');
 
-            const newVideos = [...sundayVideos, ...morningVideos];
+            const allVideos = [...sundayVideos, ...morningVideos];
 
-            if (newVideos.length === 0) {
-                setSyncMessage({ type: 'info', text: '새로 가져올 영상이 없습니다. (이미 모두 등록됨)' });
+            if (allVideos.length === 0) {
+                setSyncMessage({ type: 'info', text: '가져올 영상이 없습니다.' });
                 setLoading(false);
                 return;
             }
 
-            // 3. Insert into Supabase
+            // 3. Upsert into Supabase (Insert or Update)
             const { error } = await supabase
                 .from('posts_sermons')
-                .insert(newVideos.map(({ video_id, ...rest }) => rest)); // Remove video_id before insert
+                .upsert(allVideos, { onConflict: 'youtube_url' });
 
             if (error) throw error;
 
-            setSyncMessage({ type: 'success', text: `성공적으로 ${newVideos.length}개의 영상을 가져왔습니다!` });
+            setSyncMessage({ type: 'success', text: `성공적으로 ${allVideos.length}개의 영상을 동기화(업데이트)했습니다!` });
 
         } catch (error) {
             console.error('YouTube Sync Error:', error);

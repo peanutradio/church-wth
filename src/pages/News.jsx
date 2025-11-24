@@ -53,9 +53,7 @@ const News = () => {
                                     </div>
                                 )}
                                 <div className="p-6">
-                                    <div className="text-sm text-gray-500 mb-2">
-                                        {new Date(item.created_at).toLocaleDateString()}
-                                    </div>
+
                                     <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                                     {item.content !== '구글 드라이브에서 동기화된 주보입니다.' && (
                                         <p className="text-gray-600 line-clamp-3">{item.content}</p>

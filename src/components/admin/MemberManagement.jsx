@@ -239,9 +239,10 @@ const MemberManagement = () => {
                 </div>
             </div>
 
-            {/* Members Table */}
+            {/* Members List - Responsive Layout */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Desktop View (Table) - Hidden on Mobile */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
@@ -313,6 +314,49 @@ const MemberManagement = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile View (Cards) - Visible only on Mobile */}
+                <div className="md:hidden divide-y divide-gray-200">
+                    {currentMembers.map((member) => (
+                        <div key={member.id} className="p-4 space-y-3">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h3 className="font-medium text-gray-900">{member.name || '-'}</h3>
+                                    <p className="text-sm text-gray-500">{member.email || '-'}</p>
+                                </div>
+                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(member.role)}`}>
+                                    {getRoleLabel(member.role)}
+                                </span>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                <div>
+                                    <span className="block text-xs text-gray-400">가입일</span>
+                                    {new Date(member.created_at).toLocaleDateString('ko-KR')}
+                                </div>
+                                <div>
+                                    <span className="block text-xs text-gray-400">마지막 로그인</span>
+                                    {member.last_login
+                                        ? new Date(member.last_login).toLocaleDateString('ko-KR')
+                                        : '-'}
+                                </div>
+                            </div>
+
+                            <div className="pt-2">
+                                <label className="block text-xs font-medium text-gray-700 mb-1">권한 변경</label>
+                                <select
+                                    value={member.role}
+                                    onChange={(e) => handleRoleChange(member.id, e.target.value)}
+                                    className="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+                                >
+                                    <option value="guest">게스트</option>
+                                    <option value="member">회원</option>
+                                    <option value="admin">관리자</option>
+                                </select>
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
                 {/* Pagination */}

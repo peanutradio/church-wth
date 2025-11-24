@@ -167,7 +167,14 @@ const Admin = () => {
 
             const allVideos = [...sundayVideos, ...morningVideos];
 
-            if (allVideos.length === 0) {
+            // Deduplicate videos based on youtube_url to avoid "ON CONFLICT DO UPDATE command cannot affect row a second time" error
+            const uniqueVideosMap = new Map();
+            allVideos.forEach(video => {
+                uniqueVideosMap.set(video.youtube_url, video);
+            });
+            const uniqueVideos = Array.from(uniqueVideosMap.values());
+
+            if (uniqueVideos.length === 0) {
                 setSyncMessage({ type: 'info', text: '가져올 영상이 없습니다.' });
                 setLoading(false);
                 return;
@@ -176,11 +183,11 @@ const Admin = () => {
             // 3. Upsert into Supabase (Insert or Update)
             const { error } = await supabase
                 .from('posts_sermons')
-                .upsert(allVideos, { onConflict: 'youtube_url' });
+                .upsert(uniqueVideos, { onConflict: 'youtube_url' });
 
             if (error) throw error;
 
-            setSyncMessage({ type: 'success', text: `성공적으로 ${allVideos.length}개의 영상을 동기화(업데이트)했습니다!` });
+            setSyncMessage({ type: 'success', text: `성공적으로 ${uniqueVideos.length}개의 영상을 동기화(업데이트)했습니다!` });
 
         } catch (error) {
             console.error('YouTube Sync Error:', error);

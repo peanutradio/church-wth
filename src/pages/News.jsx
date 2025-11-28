@@ -14,11 +14,21 @@ const News = () => {
         try {
             const { data, error } = await supabase
                 .from('posts_news')
-                .select('*')
-                .order('created_at', { ascending: false });
+                .select('*');
 
             if (error) throw error;
-            setNews(data || []);
+
+            // Sort by date extracted from title (format: MMDD_주일주보)
+            const sortedData = (data || []).sort((a, b) => {
+                // Extract date from title (e.g., "1123_주일주보" -> "1123")
+                const dateA = a.title.match(/^(\d{4})/)?.[1] || '0000';
+                const dateB = b.title.match(/^(\d{4})/)?.[1] || '0000';
+
+                // Convert to numbers for comparison (newest first)
+                return parseInt(dateB) - parseInt(dateA);
+            });
+
+            setNews(sortedData);
         } catch (error) {
             console.error('Error fetching news:', error.message);
         } finally {

@@ -15,7 +15,7 @@ const News = () => {
             const { data, error } = await supabase
                 .from('posts_news')
                 .select('*')
-                .order('title', { ascending: false });
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
             setNews(data || []);

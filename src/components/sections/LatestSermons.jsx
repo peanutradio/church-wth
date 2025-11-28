@@ -6,6 +6,7 @@ const LatestSermons = () => {
     const [sundaySermon, setSundaySermon] = useState(null);
     const [morningSermons, setMorningSermons] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedVideo, setSelectedVideo] = useState(null); // For modal
 
     useEffect(() => {
         const fetchLatestSermons = async () => {
@@ -112,13 +113,23 @@ const LatestSermons = () => {
                     {/* Morning Sermons List (Right) */}
                     <div className="flex flex-col gap-5">
                         {morningSermons.map((sermon) => (
-                            <div key={sermon.id} className="flex gap-4 group bg-gray-50 p-4 rounded-xl hover:bg-white hover:shadow-md transition-all items-center">
-                                <div className="w-32 aspect-video rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                            <button
+                                key={sermon.id}
+                                onClick={() => setSelectedVideo(sermon)}
+                                className="flex gap-4 group bg-gray-50 p-4 rounded-xl hover:bg-white hover:shadow-md transition-all items-center cursor-pointer text-left w-full"
+                            >
+                                <div className="w-32 aspect-video rounded-lg overflow-hidden flex-shrink-0 bg-gray-200 relative">
                                     <img
                                         src={`https://img.youtube.com/vi/${getYoutubeId(sermon.youtube_url)}/mqdefault.jpg`}
                                         alt={sermon.title}
                                         className="w-full h-full object-cover"
                                     />
+                                    {/* Play icon overlay */}
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                                        <svg className="w-12 h-12 text-white opacity-90" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z" />
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
@@ -132,10 +143,57 @@ const LatestSermons = () => {
                                         {sermon.title}
                                     </h4>
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 </div>
+
+                {/* Video Modal */}
+                {selectedVideo && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+                        onClick={() => setSelectedVideo(null)}
+                    >
+                        <div
+                            className="relative w-full max-w-4xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Close button */}
+                            <button
+                                className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors flex items-center gap-2"
+                                onClick={() => setSelectedVideo(null)}
+                            >
+                                <span className="text-sm">닫기</span>
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+
+                            {/* Video */}
+                            <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.youtube_url)}?autoplay=1`}
+                                    title={selectedVideo.title}
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="absolute inset-0"
+                                />
+                            </div>
+
+                            {/* Video info */}
+                            <div className="mt-4 text-white">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <span className="px-3 py-1 bg-church-accent text-white text-xs font-bold rounded-full">새벽예배</span>
+                                    <span className="text-sm text-gray-300">{formatDateFromTitle(selectedVideo.title)}</span>
+                                </div>
+                                <h3 className="text-xl font-bold">{selectedVideo.title}</h3>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </section>
     );

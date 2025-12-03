@@ -255,29 +255,47 @@ const Admin = () => {
                 return;
             }
 
-            // 4. Process each new file
+            // 4. Process each new file - Download and upload to Supabase Storage
             let successCount = 0;
             for (const file of newFiles) {
                 try {
-                    // Use thumbnailLink if available, and modify size to be large
-                    // thumbnailLink typically looks like: https://lh3.googleusercontent.com/drive-viewer/...=s220
-                    // We replace =s220 with =s1600 to get a larger image
+                    // Download image from Google Drive
+                    const downloadUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${API_KEY}`;
+                    const imageResponse = await fetch(downloadUrl);
 
-                    let imageUrl = file.thumbnailLink;
-                    if (imageUrl) {
-                        // Replace default size (usually s220) with s1600 (large)
-                        imageUrl = imageUrl.replace(/=s\d+$/, '=s1600');
-                    } else {
-                        // Fallback if no thumbnail link (rare for images)
-                        imageUrl = `https://drive.google.com/thumbnail?id=${file.id}&sz=w1600`;
+                    if (!imageResponse.ok) {
+                        throw new Error(`Failed to download image: ${imageResponse.statusText}`);
                     }
 
+                    const imageBlob = await imageResponse.blob();
+
+                    // Generate unique filename
+                    const fileExtension = file.name.split('.').pop();
+                    const uniqueFileName = `drive_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
+
+                    // Upload to Supabase Storage
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('news-images')
+                        .upload(uniqueFileName, imageBlob, {
+                            contentType: file.mimeType,
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (uploadError) throw uploadError;
+
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('news-images')
+                        .getPublicUrl(uniqueFileName);
+
+                    // Insert into database
                     const { error } = await supabase
                         .from('posts_news')
                         .insert([{
                             title: file.name,
-                            content: '', // Empty content for cleaner display
-                            image_url: imageUrl
+                            content: '구글 드라이브에서 동기화된 주보입니다.',
+                            image_url: publicUrl
                         }]);
 
                     if (error) throw error;

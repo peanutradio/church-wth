@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import MemberManagement from '../components/admin/MemberManagement';
+import AdminStats from './AdminStats';
 
 const Admin = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [activeTab, setActiveTab] = useState('members'); // 'news', 'sermons', or 'members'
+    const [activeTab, setActiveTab] = useState('members'); // 'news', 'sermons', 'members', or 'stats'
 
     // News Form State
     const [newsTitle, setNewsTitle] = useState('');
@@ -351,11 +352,22 @@ const Admin = () => {
                     >
                         설교 영상 등록
                     </button>
+                    <button
+                        onClick={() => setActiveTab('stats')}
+                        className={`pb-4 px-4 font-medium transition-colors ${activeTab === 'stats'
+                            ? 'text-church-accent border-b-2 border-church-accent'
+                            : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        📊 통계 보기
+                    </button>
                 </div>
 
-                <div className={activeTab === 'members' ? '' : 'bg-white p-8 rounded-2xl shadow-sm'}>
+                <div className={activeTab === 'members' || activeTab === 'stats' ? '' : 'bg-white p-8 rounded-2xl shadow-sm'}>
                     {activeTab === 'members' ? (
                         <MemberManagement />
+                    ) : activeTab === 'stats' ? (
+                        <AdminStats />
                     ) : activeTab === 'news' ? (
                         <div className="space-y-8">
                             {/* Google Drive Sync Section */}

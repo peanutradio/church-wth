@@ -10,11 +10,11 @@
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: 20px;
     z-index: 9999;
     animation: fadeIn 0.3s ease-out;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 @keyframes fadeIn {
@@ -34,6 +34,8 @@
     flex-wrap: wrap;
     max-width: 100%;
     min-height: min-content;
+    padding: 20px;
+    margin: auto 0;
 }
 
 /* Individual Popup Card */
@@ -175,9 +177,6 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .popup-overlay {
-        padding: 20px 10px;
-        padding-top: 30px;
-        padding-bottom: 30px;
         align-items: center;
         justify-content: center;
     }
@@ -187,6 +186,8 @@
         gap: 15px;
         width: 100%;
         max-width: 300px;
+        margin: auto;
+        padding: 30px 20px;
     }
 
     .popup-card {

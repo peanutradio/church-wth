@@ -8,6 +8,7 @@ import Sermons from './pages/Sermons';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import AdminStats from './pages/AdminStats';
+import PopupNotice from './components/ui/PopupNotice';
 import { initGA, trackPageView } from './lib/analytics';
 
 // Component to track page views
@@ -30,6 +31,7 @@ function App() {
   return (
     <Router>
       <PageTracker />
+      <PopupNotice />
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-grow">

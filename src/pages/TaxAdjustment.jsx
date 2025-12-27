@@ -7,6 +7,33 @@ const TaxAdjustment = () => {
     const [submitted, setSubmitted] = useState(false);
     const [file, setFile] = useState(null);
 
+    // State for controlled inputs to handle formatting
+    const [phone, setPhone] = useState('');
+    const [residentId, setResidentId] = useState('');
+
+    const formatPhoneNumber = (value) => {
+        const numbers = value.replace(/[^\d]/g, '');
+        if (numbers.length <= 3) return numbers;
+        if (numbers.length <= 7) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+        return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+    };
+
+    const formatResidentId = (value) => {
+        const numbers = value.replace(/[^\d]/g, '');
+        if (numbers.length <= 6) return numbers;
+        return `${numbers.slice(0, 6)}-${numbers.slice(6, 13)}`;
+    };
+
+    const handlePhoneChange = (e) => {
+        const formatted = formatPhoneNumber(e.target.value);
+        if (formatted.length <= 13) setPhone(formatted);
+    };
+
+    const handleResidentIdChange = (e) => {
+        const formatted = formatResidentId(e.target.value);
+        if (formatted.length <= 14) setResidentId(formatted);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -20,10 +47,14 @@ const TaxAdjustment = () => {
             // Handle file upload for corporate
             if (type === 'corporate' && file) {
                 const fileExt = file.name.split('.').pop();
-                // Sanitize corporate name for filename (remove special chars, spaces to underscore)
-                const safeName = data.corporate_name.replace(/[^a-zA-Z0-9가-힣]/g, '_');
-                const timestamp = Date.now();
-                const fileName = `${safeName}_${timestamp}.${fileExt}`;
+
+                // Alternative S3-Safe Naming: Use Phone Number
+                // Phone numbers are ASCII-safe and unique per applicant.
+                const safePhone = data.phone.replace(/[^0-9-]/g, '');
+
+                // Format: [Phone]_business_license.[ext]
+                // Example: 010-1234-5678_business_license.pdf
+                const fileName = `${safePhone}_business_license.${fileExt}`;
                 const filePath = `${fileName}`;
 
                 const { error: uploadError } = await supabase.storage
@@ -150,6 +181,8 @@ const TaxAdjustment = () => {
                             <input
                                 type="tel"
                                 name="phone"
+                                value={phone}
+                                onChange={handlePhoneChange}
                                 placeholder="010-0000-0000"
                                 required
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
@@ -177,6 +210,8 @@ const TaxAdjustment = () => {
                                     <input
                                         type="text"
                                         name="resident_id"
+                                        value={residentId}
+                                        onChange={handleResidentIdChange}
                                         placeholder="000000-0000000"
                                         required
                                         className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"

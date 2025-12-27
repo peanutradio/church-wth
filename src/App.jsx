@@ -8,6 +8,7 @@ import Sermons from './pages/Sermons';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import AdminStats from './pages/AdminStats';
+import TaxAdjustment from './pages/TaxAdjustment';
 import PopupNotice from './components/ui/PopupNotice';
 import { initGA, trackPageView } from './lib/analytics';
 
@@ -42,6 +43,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/stats" element={<AdminStats />} />
+            <Route path="/tax-adjustment" element={<TaxAdjustment />} />
           </Routes>
         </div>
         <Footer />

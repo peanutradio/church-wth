@@ -11,6 +11,10 @@ const TaxAdjustment = () => {
     const [phone, setPhone] = useState('');
     const [residentId, setResidentId] = useState('');
 
+    // Privacy Policy State
+    const [agreed, setAgreed] = useState(false);
+    const [showPrivacy, setShowPrivacy] = useState(false);
+
     const formatPhoneNumber = (value) => {
         const numbers = value.replace(/[^\d]/g, '');
         if (numbers.length <= 3) return numbers;
@@ -83,6 +87,7 @@ const TaxAdjustment = () => {
                 address: type === 'personal' ? data.address : null,
                 corporate_name: type === 'corporate' ? data.corporate_name : null,
                 business_license_url: fileUrl,
+                privacy_agreed: true, // User must agree to submit
             };
 
             const { error } = await supabase
@@ -297,11 +302,34 @@ const TaxAdjustment = () => {
                             </>
                         )}
 
-                        <div className="pt-4">
+                        {/* Privacy Agreement Section */}
+                        <div className="border border-red-400 bg-red-50 rounded-lg p-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="checkbox"
+                                    id="privacy_agreement"
+                                    checked={agreed}
+                                    onChange={(e) => setAgreed(e.target.checked)}
+                                    className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
+                                />
+                                <label htmlFor="privacy_agreement" className="text-gray-900 font-medium cursor-pointer select-none">
+                                    고유식별정보 수집 및 이용 약관에 동의합니다.
+                                </label>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowPrivacy(true)}
+                                className="text-sm text-gray-500 border border-gray-300 bg-white px-2 py-1 rounded hover:bg-gray-50 transition-colors whitespace-nowrap"
+                            >
+                                내용보기
+                            </button>
+                        </div>
+
+                        <div className="pt-2">
                             <button
                                 type="submit"
-                                disabled={loading}
-                                className="w-full bg-black text-white py-4 rounded-lg font-bold text-lg hover:bg-gray-800 transition-all disabled:bg-gray-400"
+                                disabled={loading || !agreed}
+                                className="w-full bg-black text-white py-4 rounded-lg font-bold text-lg hover:bg-gray-800 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
                             >
                                 {loading ? '제출 중...' : '신청하기'}
                             </button>
@@ -309,6 +337,54 @@ const TaxAdjustment = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Privacy Policy Modal */}
+            {showPrivacy && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setShowPrivacy(false)}>
+                    <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[80vh] flex flex-col overflow-hidden animate-scale-up" onClick={e => e.stopPropagation()}>
+                        <div className="p-5 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                            <h3 className="font-bold text-lg">고유식별정보 수집 및 이용 약관</h3>
+                            <button onClick={() => setShowPrivacy(false)} className="text-gray-400 hover:text-gray-600">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="p-6 overflow-y-auto text-sm text-gray-700 leading-relaxed text-left space-y-4">
+                            <div>
+                                <h4 className="font-bold mb-1">1. 수집하는 개인정보의 항목 및 수집 방법</h4>
+                                <p className="mb-1">1) 개인정보 수집항목</p>
+                                <p className="pl-2">① 개인회원: 이름, 주민등록번호, 주소, 휴대전화번호, 이메일, 만 14세 미만의 경우 법정대리인 정보</p>
+                                <p className="pl-2">② 기업회원: 기업명, 사업자등록번호, 대표자명, 연락처, 이메일</p>
+                                <p className="mt-2 text-gray-600">2) 개인정보 수집 방법</p>
+                                <p className="pl-2">기부금영수증 신청 웹사이트를 통한 회원가입, 전화, 서면, 이메일, 팩스 등</p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-bold mb-1">2. 개인정보의 수집 및 이용 목적</h4>
+                                <p>위더처치는 수집한 개인정보를 다음의 목적을 위해 활용합니다.</p>
+                                <ul className="list-disc pl-5 mt-1 space-y-1">
+                                    <li>회원 관리 : 웹사이트 이용에 따른 본인확인, 개인 식별</li>
+                                    <li>후원 관리 : 후원자의 기부금 납부 증명서 발급 및 후원자 관리, 후원 가입 신청 시 후원자 안내 발송, 연말정산 간소화 신고, 국세청 전자기부금 영수증 발급을 위한 기능 제공</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 className="font-bold mb-1">3. 개인정보의 보유 및 이용기간</h4>
+                                <p>재정국에 개인정보 제공 철회를 위한 의사 전달 시까지</p>
+                            </div>
+                        </div>
+                        <div className="p-4 border-t bg-gray-50 flex justify-end">
+                            <button
+                                onClick={() => setShowPrivacy(false)}
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium text-sm"
+                            >
+                                닫기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

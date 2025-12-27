@@ -15,6 +15,8 @@ create table public.tax_applications (
   corporate_name text,
   business_license_url text, -- URL to file in storage
   
+  privacy_agreed boolean default false, -- Privacy policy agreement
+  
   status text default 'pending' check (status in ('pending', 'completed', 'rejected')),
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );

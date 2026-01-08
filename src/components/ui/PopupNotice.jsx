@@ -82,7 +82,7 @@ const PopupNotice = () => {
                             className="popup-image-container block cursor-pointer"
                             onClick={() => handleClose('bible_study')}
                         >
-                            <img src="/images/popups/bible_study_2025.png" alt="위더처치 말씀공방 1기 심화반" className="popup-image" />
+                            <img src="/images/popups/bible_study_2025_v2.png" alt="위더처치 말씀공방 1기 심화반" className="popup-image" />
                         </a>
                         <div className="popup-footer">
                             <label className="popup-checkbox-label">

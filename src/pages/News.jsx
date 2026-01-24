@@ -18,14 +18,32 @@ const News = () => {
 
             if (error) throw error;
 
-            // Sort by date extracted from title (format: MMDD_주일주보)
-            const sortedData = (data || []).sort((a, b) => {
-                // Extract date from title (e.g., "1123_주일주보" -> "1123")
-                const dateA = a.title.match(/^(\d{4})/)?.[1] || '0000';
-                const dateB = b.title.match(/^(\d{4})/)?.[1] || '0000';
+            // Sort by date extracted from title
+            // Official Format: YYMMDD (e.g., "260104_주일주보") -> Treated as 20260104
+            // Legacy Format: MMDD (e.g., "1123_주일주보") -> Treated as 2025MMDD
 
-                // Convert to numbers for comparison (newest first)
-                return parseInt(dateB) - parseInt(dateA);
+            const sortedData = (data || []).sort((a, b) => {
+                const getFullDate = (title) => {
+                    const match = title.match(/^(\d+)/);
+                    if (!match) return 0;
+
+                    const numStr = match[1];
+
+                    if (numStr.length === 4) {
+                        // "1123" -> 20251123
+                        return parseInt('2025' + numStr);
+                    } else if (numStr.length === 6) {
+                        // "260105" -> 20260105
+                        return parseInt('20' + numStr);
+                    }
+                    // "20260105" -> 20260105
+                    return parseInt(numStr);
+                };
+
+                const valA = getFullDate(a.title);
+                const valB = getFullDate(b.title);
+
+                return valB - valA;
             });
 
             setNews(sortedData);

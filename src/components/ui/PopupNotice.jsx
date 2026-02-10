@@ -18,7 +18,7 @@ const PopupNotice = () => {
     const CHRISTMAS_HIDE_DATE = new Date('2025-12-26T00:00:00');
     const ENDDAY_HIDE_DATE = new Date('2026-01-01T00:00:00');
     const TAX_HIDE_DATE = new Date('2026-01-16T00:00:00');
-    const BIBLE_STUDY_HIDE_DATE = new Date('2026-02-06T00:00:00');
+    const BIBLE_STUDY_HIDE_DATE = new Date('2026-03-09T00:00:00');
 
     const navigate = useNavigate();
 
@@ -82,7 +82,7 @@ const PopupNotice = () => {
                             className="popup-image-container block cursor-pointer"
                             onClick={() => handleClose('bible_study')}
                         >
-                            <img src="/images/popups/bible_study_2025_v2.png" alt="위더처치 말씀공방 1기 심화반" className="popup-image" />
+                            <img src="/images/popups/bible_study_2025_v3.png" alt="위더처치 말씀공방 1기 심화반" className="popup-image" />
                         </a>
                         <div className="popup-footer">
                             <label className="popup-checkbox-label">

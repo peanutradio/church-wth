@@ -78,10 +78,11 @@ const Header = () => {
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <Link
                     to="/"
-                    className={`text-2xl font-bold font-serif ${isScrolled ? 'text-gray-900' : 'text-gray-800'}`}
+                    className={`flex items-center gap-3 text-2xl font-bold font-serif ${isScrolled ? 'text-gray-900' : 'text-gray-800'}`}
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
-                    We, the Church
+                    <img src="/images/logos/logo.png" alt="We, the Church 로고" className="h-10 w-auto" />
+                    <span>We, the Church</span>
                 </Link>
 
                 {/* Desktop Nav */}

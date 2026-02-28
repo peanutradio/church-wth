@@ -81,7 +81,7 @@ const Header = () => {
                     className={`flex items-center gap-3 text-2xl font-bold font-serif ${isScrolled ? 'text-gray-900' : 'text-gray-800'}`}
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
-                    <img src="/images/logos/logo.png" alt="We, the Church 로고" className="h-10 w-auto" />
+                    <img src="/images/logos/logo.png" alt="We, the Church 로고" className="h-16 w-auto" />
                     <span>We, the Church</span>
                 </Link>
 

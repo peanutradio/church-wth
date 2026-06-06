@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import MemberManagement from '../components/admin/MemberManagement';
+import TaxApplications from '../components/admin/TaxApplications';
 import AdminStats from './AdminStats';
 
 const Admin = () => {
@@ -361,13 +362,24 @@ const Admin = () => {
                     >
                         📊 통계 보기
                     </button>
+                    <button
+                        onClick={() => setActiveTab('tax')}
+                        className={`pb-4 px-4 font-medium transition-colors ${activeTab === 'tax'
+                            ? 'text-church-accent border-b-2 border-church-accent'
+                            : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        연말정산 관리
+                    </button>
                 </div>
 
-                <div className={activeTab === 'members' || activeTab === 'stats' ? '' : 'bg-white p-8 rounded-2xl shadow-sm'}>
+                <div className={activeTab === 'members' || activeTab === 'stats' || activeTab === 'tax' ? '' : 'bg-white p-8 rounded-2xl shadow-sm'}>
                     {activeTab === 'members' ? (
                         <MemberManagement />
                     ) : activeTab === 'stats' ? (
                         <AdminStats />
+                    ) : activeTab === 'tax' ? (
+                        <TaxApplications />
                     ) : activeTab === 'news' ? (
                         <div className="space-y-8">
                             {/* Google Drive Sync Section */}

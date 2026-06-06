@@ -46,20 +46,14 @@ const TaxAdjustment = () => {
         const data = Object.fromEntries(formData.entries());
 
         try {
-            let fileUrl = null;
+            let filePath = null;
 
-            // Handle file upload for corporate
+            // 법인: 사업자등록증 업로드 (비공개 버킷 — 공개 URL을 만들지 않음)
             if (type === 'corporate' && file) {
                 const fileExt = file.name.split('.').pop();
-
-                // Alternative S3-Safe Naming: Use Phone Number
-                // Phone numbers are ASCII-safe and unique per applicant.
-                const safePhone = data.phone.replace(/[^0-9-]/g, '');
-
-                // Format: [Phone]_business_license.[ext]
-                // Example: 010-1234-5678_business_license.pdf
-                const fileName = `${safePhone}_business_license.${fileExt}`;
-                const filePath = `${fileName}`;
+                // 추측 불가능한 무작위 파일명 (URL 추측을 통한 무단 열람 방지)
+                const uniqueName = `${Date.now()}_${Math.random().toString(36).slice(2)}.${fileExt}`;
+                filePath = `business_licenses/${uniqueName}`;
 
                 const { error: uploadError } = await supabase.storage
                     .from('tax-documents')
@@ -69,30 +63,20 @@ const TaxAdjustment = () => {
                     });
 
                 if (uploadError) throw uploadError;
-
-                const { data: { publicUrl } } = supabase.storage
-                    .from('tax-documents')
-                    .getPublicUrl(filePath);
-
-                fileUrl = publicUrl;
+                // 공개 URL을 만들지 않고 "파일 경로"만 저장 → 관리자가 열람 시 임시 서명 URL 발급
             }
 
-            // Insert into database
-            const payload = {
-                type,
-                name: data.name,
-                phone: data.phone,
-                email: data.email,
-                resident_id: type === 'personal' ? data.resident_id : null,
-                address: type === 'personal' ? data.address : null,
-                corporate_name: type === 'corporate' ? data.corporate_name : null,
-                business_license_url: fileUrl,
-                privacy_agreed: true, // User must agree to submit
-            };
-
-            const { error } = await supabase
-                .from('tax_applications')
-                .insert([payload]);
+            // 주민번호는 서버(RPC)에서 암호화되어 저장됩니다 (클라이언트 평문 저장 안 함)
+            const { error } = await supabase.rpc('submit_tax_application', {
+                p_type: type,
+                p_name: data.name,
+                p_phone: data.phone,
+                p_email: data.email,
+                p_resident_id: type === 'personal' ? data.resident_id : null,
+                p_address: type === 'personal' ? data.address : null,
+                p_corporate_name: type === 'corporate' ? data.corporate_name : null,
+                p_business_license_url: filePath,
+            });
 
             if (error) throw error;
 
@@ -222,7 +206,7 @@ const TaxAdjustment = () => {
                                         className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
-                                        * 국세청 간소화 서비스 등록을 위해 필요합니다. 암호화되어 관리자만 열람 가능합니다.
+                                        * 국세청 간소화 서비스 등록을 위해 필요하며, 제출 즉시 암호화되어 관리자만 열람할 수 있습니다.
                                     </p>
                                 </div>
                                 <div>

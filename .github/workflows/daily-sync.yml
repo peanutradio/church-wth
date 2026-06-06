@@ -1,29 +1,32 @@
-name: Daily Content Sync
+name: Auto Content Sync
 
 on:
   schedule:
-    # 6:05 AM KST = 9:05 PM UTC (previous day)
+    # 유튜브 영상: 매일 오전 6:05 (KST) = 전날 21:05 (UTC)
     - cron: '5 21 * * *'
-    # 8:00 PM KST = 11:00 AM UTC (same day)
-    - cron: '0 11 * * *'
-  workflow_dispatch:  # Allow manual trigger from GitHub UI
+    # 주보: 매주 일요일 낮 12:00 (KST) = 일요일 03:00 (UTC)
+    - cron: '0 3 * * 0'
+  workflow_dispatch:  # GitHub UI에서 수동 실행 (둘 다 실행)
 
 jobs:
-  sync-content:
+  sync:
     runs-on: ubuntu-latest
-    
     steps:
+      # 유튜브 동기화 — 매일 스케줄 또는 수동 실행 시
       - name: Sync YouTube Videos
+        if: github.event.schedule == '5 21 * * *' || github.event_name == 'workflow_dispatch'
         run: |
-          curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-youtube" \
+          curl -fsS -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-youtube" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -H "Content-Type: application/json"
-      
+
+      # 주보 동기화 — 일요일 스케줄 또는 수동 실행 시
       - name: Sync Google Drive Bulletins
+        if: github.event.schedule == '0 3 * * 0' || github.event_name == 'workflow_dispatch'
         run: |
-          curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-drive" \
+          curl -fsS -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-drive" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -H "Content-Type: application/json"
-      
+
       - name: Log completion
-        run: echo "Content sync completed at $(date)"
+        run: echo "Content sync finished at $(date)"

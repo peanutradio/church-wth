@@ -52,7 +52,7 @@ const About = () => {
 
                         <div className="space-y-3">
                             {philosophyItems.map((item, index) => (
-                                <div key={index} className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group hover:-translate-y-0.5 flex items-start gap-4">
+                                <div key={index} className={`reveal reveal-delay-${(index % 3) + 1} bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group hover:-translate-y-0.5 flex items-start gap-4`}>
                                     <div className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
                                         <item.icon className={`w-6 h-6 ${item.color}`} />
                                     </div>

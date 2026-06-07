@@ -79,7 +79,7 @@ const TermsContent = () => (
     <div className="space-y-6">
         <section>
             <h3 className="text-lg font-bold mb-3">제1조 목적</h3>
-            <p>본 이용약관은 "사이트명"(이하 "사이트")의 서비스의 이용조건과 운영에 관한 제반 사항 규정을 목적으로 합니다.</p>
+            <p>본 이용약관은 We, the Church(위더처치교회, 이하 "교회")의 서비스 이용조건과 운영에 관한 제반 사항 규정을 목적으로 합니다.</p>
         </section>
 
         <section>

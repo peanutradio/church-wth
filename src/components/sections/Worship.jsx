@@ -43,11 +43,11 @@ const Worship = () => {
     return (
         <section id="worship" className="py-20 bg-gray-50">
             <div className="container mx-auto px-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">예배 안내</h2>
+                <h2 className="reveal text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">예배 안내</h2>
 
                 <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {services.map((service, index) => (
-                        <div key={index} className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col">
+                        <div key={index} className={`reveal reveal-delay-${(index % 3) + 1} bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col`}>
                             <h3 className="text-2xl font-bold text-gray-900 mb-6">{service.title}</h3>
 
                             <div className="space-y-4 flex-grow">

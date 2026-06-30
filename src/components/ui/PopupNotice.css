@@ -306,8 +306,43 @@
     border-radius: 8px;
 }
 
-.mreg-foot {
+.mreg-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     margin-top: 22px;
+    padding: 13px 30px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #F0D6A8, #E0B782);
+    color: #341C50;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mreg-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42);
+}
+
+.mreg-cta:active {
+    transform: translateY(0);
+}
+
+.mreg-arrow {
+    transition: transform 0.2s ease;
+}
+
+.mreg-cta:hover .mreg-arrow {
+    transform: translateX(3px);
+}
+
+.mreg-foot {
+    margin-top: 18px;
     font-size: 11px;
     letter-spacing: 0.22em;
     color: #A98FC4;
@@ -342,26 +377,21 @@
 }
 
 .mreg-btn {
-    border: none;
+    border: 1px solid rgba(231, 201, 156, 0.45);
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
-    color: #341C50;
-    padding: 10px 24px;
+    color: #E7C99C;
+    padding: 9px 22px;
     border-radius: 11px;
-    background: linear-gradient(135deg, #F0D6A8, #E0B782);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: transparent;
+    transition: background 0.2s ease, border-color 0.2s ease;
     white-space: nowrap;
 }
 
 .mreg-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.38);
-}
-
-.mreg-btn:active {
-    transform: translateY(0);
+    background: rgba(231, 201, 156, 0.12);
+    border-color: rgba(231, 201, 156, 0.7);
 }
 
 @media (max-width: 480px) {

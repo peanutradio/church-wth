@@ -89,6 +89,15 @@ const PopupNotice = () => {
                             <div className="mreg-qr">
                                 <img src="/images/popups/QR_register.jpg" alt="교인등록 QR" />
                             </div>
+                            <a
+                                href="https://m.site.naver.com/1Y5tH"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mreg-cta"
+                                onClick={() => handleClose('member_reg')}
+                            >
+                                새가족 등록하기 <span className="mreg-arrow">→</span>
+                            </a>
                             <p className="mreg-foot">We The Church</p>
                         </div>
                         <div className="mreg-footer">

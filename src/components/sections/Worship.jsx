@@ -5,7 +5,7 @@ const Worship = () => {
     const services = [
         {
             title: "새벽예배",
-            time: "매주 월~금 오전 6:00",
+            time: "매주 월~금 오전 4:00",
             location: "Youtube 송출",
             link: "#", // 추후 업데이트
             isOnline: true

@@ -3,18 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import './PopupNotice.css';
 
 const PopupNotice = () => {
+    const [showMemberReg, setShowMemberReg] = useState(false);
     const [showChristmas, setShowChristmas] = useState(false);
     const [showEndDay, setShowEndDay] = useState(false);
     const [showTax, setShowTax] = useState(false);
     const [showBibleStudy, setShowBibleStudy] = useState(false);
 
     // Storage keys
+    const STORAGE_KEY_MEMBER_REG = 'popup_member_reg_hidden_until';
     const STORAGE_KEY_CHRISTMAS = 'popup_christmas_hidden_until';
     const STORAGE_KEY_ENDDAY = 'popup_endday_hidden_until';
     const STORAGE_KEY_TAX = 'popup_tax_hidden_until';
     const STORAGE_KEY_BIBLE_STUDY = 'popup_bible_study_hidden_until';
 
     // Hide dates
+    const MEMBER_REG_HIDE_DATE = new Date('2026-08-01T00:00:00');
     const CHRISTMAS_HIDE_DATE = new Date('2025-12-26T00:00:00');
     const ENDDAY_HIDE_DATE = new Date('2026-01-01T00:00:00');
     const TAX_HIDE_DATE = new Date('2026-01-16T00:00:00');
@@ -24,6 +27,7 @@ const PopupNotice = () => {
 
     const handleNavigate = (path) => {
         // Close all popups
+        setShowMemberReg(false);
         setShowChristmas(false);
         setShowEndDay(false);
         setShowTax(false);
@@ -38,6 +42,7 @@ const PopupNotice = () => {
     const checkPopupVisibility = () => {
         const now = new Date();
 
+        if (shouldShowPopup(STORAGE_KEY_MEMBER_REG, MEMBER_REG_HIDE_DATE, now)) setShowMemberReg(true);
         if (shouldShowPopup(STORAGE_KEY_CHRISTMAS, CHRISTMAS_HIDE_DATE, now)) setShowChristmas(true);
         if (shouldShowPopup(STORAGE_KEY_ENDDAY, ENDDAY_HIDE_DATE, now)) setShowEndDay(true);
         if (shouldShowPopup(STORAGE_KEY_TAX, TAX_HIDE_DATE, now)) setShowTax(true);
@@ -52,6 +57,7 @@ const PopupNotice = () => {
     };
 
     const handleClose = (popupType) => {
+        if (popupType === 'member_reg') setShowMemberReg(false);
         if (popupType === 'christmas') setShowChristmas(false);
         if (popupType === 'endday') setShowEndDay(false);
         if (popupType === 'tax') setShowTax(false);
@@ -66,11 +72,28 @@ const PopupNotice = () => {
         handleClose(popupType);
     };
 
-    if (!showChristmas && !showEndDay && !showTax && !showBibleStudy) return null;
+    if (!showMemberReg && !showChristmas && !showEndDay && !showTax && !showBibleStudy) return null;
 
     return (
         <div className="popup-overlay">
             <div className="popup-container">
+                {/* 교인등록 QR Popup (Priority) */}
+                {showMemberReg && (
+                    <div className="popup-card popup-fade-in">
+                        <button className="popup-close-x" onClick={() => handleClose('member_reg')}>×</button>
+                        <div className="popup-image-container">
+                            <img src="/images/popups/QR_register.jpg" alt="교인등록 QR" className="popup-image" />
+                        </div>
+                        <div className="popup-footer">
+                            <label className="popup-checkbox-label">
+                                <input type="checkbox" onChange={(e) => e.target.checked && handleDontShowToday(STORAGE_KEY_MEMBER_REG, 'member_reg')} />
+                                <span>오늘 더 이상 보지 않기</span>
+                            </label>
+                            <button className="popup-close-btn" onClick={() => handleClose('member_reg')}>닫기</button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Bible Study Popup (New) */}
                 {showBibleStudy && (
                     <div className="popup-card popup-fade-in">

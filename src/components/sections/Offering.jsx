@@ -12,23 +12,23 @@ const Offering = () => {
     };
 
     return (
-        <section id="offering" className="py-20 bg-gradient-to-br from-church-purple/90 to-church-pink/90 text-white">
+        <section id="offering" className="py-20 bg-gradient-to-br from-church-purple/90 to-church-pink/90 text-[#4A2168]">
             <div className="container mx-auto px-4 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 font-serif">온라인 헌금</h2>
-                <p className="text-white/90 mb-12 max-w-2xl mx-auto text-lg">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 font-serif text-[#4A2168]">온라인 헌금</h2>
+                <p className="text-[#6B4A82] mb-12 max-w-2xl mx-auto text-lg">
                     성도님들의 헌금은 교회 사역과<br />
                     이웃을 섬기는 일에 귀하게 사용됩니다.
                 </p>
 
-                <div className="max-w-xl mx-auto bg-white/10 backdrop-blur-sm p-8 rounded-2xl border border-white/20">
-                    <p className="text-sm text-white/70 mb-2">계좌번호</p>
+                <div className="max-w-xl mx-auto bg-white/70 backdrop-blur-sm p-8 rounded-2xl border border-white/60 shadow-lg">
+                    <p className="text-sm text-[#8A6AA5] mb-2">계좌번호</p>
                     <div className="flex items-center justify-center gap-4 flex-wrap">
-                        <span className="text-xl md:text-2xl font-mono font-bold tracking-wide">
+                        <span className="text-xl md:text-2xl font-mono font-bold tracking-wide text-[#4A2168]">
                             {accountInfo}
                         </span>
                         <button
                             onClick={handleCopy}
-                            className="flex items-center gap-2 px-4 py-2 bg-white text-church-accent hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-church-accent text-white hover:opacity-90 rounded-lg text-sm font-medium transition-opacity shadow-sm"
                         >
                             {copied ? (
                                 <>

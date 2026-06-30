@@ -22,8 +22,8 @@ const Offering = () => {
 
                 <div className="max-w-xl mx-auto bg-white/70 backdrop-blur-sm p-8 rounded-2xl border border-white/60 shadow-lg">
                     <p className="text-sm text-[#8A6AA5] mb-2">계좌번호</p>
-                    <div className="flex items-center justify-center gap-4 flex-wrap">
-                        <span className="text-lg text-[#6B4A82]">
+                    <div className="flex flex-col items-center gap-4">
+                        <span className="text-xl text-[#6B4A82]">
                             {accountInfo}
                         </span>
                         <button

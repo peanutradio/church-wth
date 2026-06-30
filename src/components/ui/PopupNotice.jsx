@@ -77,19 +77,26 @@ const PopupNotice = () => {
     return (
         <div className="popup-overlay">
             <div className="popup-container">
-                {/* 교인등록 QR Popup (Priority) */}
+                {/* 새가족 등록 QR Popup (Priority) — 디자인: 딥 플럼 + 골드 */}
                 {showMemberReg && (
-                    <div className="popup-card popup-fade-in">
-                        <button className="popup-close-x" onClick={() => handleClose('member_reg')}>×</button>
-                        <div className="popup-image-container">
-                            <img src="/images/popups/QR_register.jpg" alt="교인등록 QR" className="popup-image" />
+                    <div className="popup-card popup-fade-in mreg-card">
+                        <button className="popup-close-x mreg-close" onClick={() => handleClose('member_reg')}>×</button>
+                        <div className="mreg-body">
+                            <div className="mreg-eyebrow">New Family</div>
+                            <span className="mreg-divider"></span>
+                            <h2 className="mreg-title">7월 새가족 등록</h2>
+                            <p className="mreg-sub">위더처치에 오신 것을 환영합니다.<br />아래 QR 코드로 새가족 등록을 해주세요.</p>
+                            <div className="mreg-qr">
+                                <img src="/images/popups/QR_register.jpg" alt="교인등록 QR" />
+                            </div>
+                            <p className="mreg-foot">We The Church</p>
                         </div>
-                        <div className="popup-footer">
-                            <label className="popup-checkbox-label">
+                        <div className="mreg-footer">
+                            <label className="mreg-check">
                                 <input type="checkbox" onChange={(e) => e.target.checked && handleDontShowToday(STORAGE_KEY_MEMBER_REG, 'member_reg')} />
                                 <span>오늘 더 이상 보지 않기</span>
                             </label>
-                            <button className="popup-close-btn" onClick={() => handleClose('member_reg')}>닫기</button>
+                            <button className="mreg-btn" onClick={() => handleClose('member_reg')}>닫기</button>
                         </div>
                     </div>
                 )}

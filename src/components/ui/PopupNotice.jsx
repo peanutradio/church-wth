@@ -117,7 +117,7 @@ const PopupNotice = () => {
                         <div className="mreg-body">
                             <div className="mreg-eyebrow">New Family</div>
                             <span className="mreg-divider"></span>
-                            <h2 className="mreg-title">7월 새가족 등록</h2>
+                            <h2 className="mreg-title">새가족 등록</h2>
                             <p className="mreg-sub">위더처치에 오신 것을 환영합니다.<br />아래 QR 코드로 새가족 등록을 해주세요.</p>
                             <div className="mreg-qr">
                                 <img src="/images/popups/QR_register.jpg" alt="교인등록 QR" />

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './PopupNotice.css';
 
 const PopupNotice = () => {
+    const [showCamp, setShowCamp] = useState(false);
     const [showMemberReg, setShowMemberReg] = useState(false);
     const [showChristmas, setShowChristmas] = useState(false);
     const [showEndDay, setShowEndDay] = useState(false);
@@ -10,6 +11,7 @@ const PopupNotice = () => {
     const [showBibleStudy, setShowBibleStudy] = useState(false);
 
     // Storage keys
+    const STORAGE_KEY_CAMP = 'popup_camp_2026_hidden_until';
     const STORAGE_KEY_MEMBER_REG = 'popup_member_reg_hidden_until';
     const STORAGE_KEY_CHRISTMAS = 'popup_christmas_hidden_until';
     const STORAGE_KEY_ENDDAY = 'popup_endday_hidden_until';
@@ -17,6 +19,8 @@ const PopupNotice = () => {
     const STORAGE_KEY_BIBLE_STUDY = 'popup_bible_study_hidden_until';
 
     // Hide dates
+    // 캠프(2026.10.30~11.01) 신청은 10/29까지 → 10/30부터 자동 숨김
+    const CAMP_HIDE_DATE = new Date('2026-10-30T00:00:00');
     const MEMBER_REG_HIDE_DATE = new Date('2026-08-01T00:00:00');
     const CHRISTMAS_HIDE_DATE = new Date('2025-12-26T00:00:00');
     const ENDDAY_HIDE_DATE = new Date('2026-01-01T00:00:00');
@@ -27,6 +31,7 @@ const PopupNotice = () => {
 
     const handleNavigate = (path) => {
         // Close all popups
+        setShowCamp(false);
         setShowMemberReg(false);
         setShowChristmas(false);
         setShowEndDay(false);
@@ -42,6 +47,7 @@ const PopupNotice = () => {
     const checkPopupVisibility = () => {
         const now = new Date();
 
+        if (shouldShowPopup(STORAGE_KEY_CAMP, CAMP_HIDE_DATE, now)) setShowCamp(true);
         if (shouldShowPopup(STORAGE_KEY_MEMBER_REG, MEMBER_REG_HIDE_DATE, now)) setShowMemberReg(true);
         if (shouldShowPopup(STORAGE_KEY_CHRISTMAS, CHRISTMAS_HIDE_DATE, now)) setShowChristmas(true);
         if (shouldShowPopup(STORAGE_KEY_ENDDAY, ENDDAY_HIDE_DATE, now)) setShowEndDay(true);
@@ -57,6 +63,7 @@ const PopupNotice = () => {
     };
 
     const handleClose = (popupType) => {
+        if (popupType === 'camp') setShowCamp(false);
         if (popupType === 'member_reg') setShowMemberReg(false);
         if (popupType === 'christmas') setShowChristmas(false);
         if (popupType === 'endday') setShowEndDay(false);
@@ -72,11 +79,36 @@ const PopupNotice = () => {
         handleClose(popupType);
     };
 
-    if (!showMemberReg && !showChristmas && !showEndDay && !showTax && !showBibleStudy) return null;
+    if (!showCamp && !showMemberReg && !showChristmas && !showEndDay && !showTax && !showBibleStudy) return null;
 
     return (
         <div className="popup-overlay">
             <div className="popup-container">
+                {/* 2026 패밀리 캠프 신청 Popup */}
+                {showCamp && (
+                    <div className="popup-card popup-fade-in">
+                        <button className="popup-close-x" onClick={() => handleClose('camp')}>×</button>
+                        <div
+                            onClick={() => handleNavigate('/family-camp')}
+                            className="popup-image-container camp-image-container block cursor-pointer"
+                        >
+                            <img src="/images/popups/churchCamp.jpg" alt="2026 위더처치 패밀리 캠프" className="popup-image" />
+                        </div>
+                        <div className="popup-footer">
+                            <button className="camp-apply-btn" onClick={() => handleNavigate('/family-camp')}>
+                                캠프 신청하기 →
+                            </button>
+                            <div className="flex items-center justify-between gap-3">
+                                <label className="popup-checkbox-label">
+                                    <input type="checkbox" onChange={(e) => e.target.checked && handleDontShowToday(STORAGE_KEY_CAMP, 'camp')} />
+                                    <span>오늘 더 이상 보지 않기</span>
+                                </label>
+                                <button className="camp-close-btn" onClick={() => handleClose('camp')}>닫기</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* 새가족 등록 QR Popup (Priority) — 디자인: 딥 플럼 + 골드 */}
                 {showMemberReg && (
                     <div className="popup-card popup-fade-in mreg-card">

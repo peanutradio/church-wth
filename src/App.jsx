@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import AdminStats from './pages/AdminStats';
 import TaxAdjustment from './pages/TaxAdjustment';
+import FamilyCamp from './pages/FamilyCamp';
 import PopupNotice from './components/ui/PopupNotice';
 import { initGA, trackPageView } from './lib/analytics';
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/stats" element={<AdminStats />} />
             <Route path="/tax-adjustment" element={<TaxAdjustment />} />
+            <Route path="/family-camp" element={<FamilyCamp />} />
           </Routes>
         </div>
         <Footer />

@@ -239,6 +239,54 @@
     }
 }
 
+/* ── 2026 패밀리 캠프 팝업 (포스터 전체가 잘리지 않도록 contain) ── */
+.camp-image-container {
+    background: #F2EFE9;
+}
+
+.camp-image-container .popup-image {
+    object-fit: contain;
+}
+
+.camp-apply-btn {
+    width: 100%;
+    padding: 13px 24px;
+    border: none;
+    border-radius: 10px;
+    background: #22355B;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(34, 53, 91, 0.28);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.camp-apply-btn:hover {
+    background: #C0622E;
+    transform: translateY(-2px);
+}
+
+.camp-apply-btn:active {
+    transform: translateY(0);
+}
+
+.camp-close-btn {
+    border: 1px solid #D6CEC0;
+    background: transparent;
+    color: #7A6E5F;
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+.camp-close-btn:hover {
+    background: #F2EFE9;
+}
+
 /* ── 새가족 등록 QR 팝업 (디자인: 딥 플럼 + 골드) ── */
 .mreg-card {
     background: radial-gradient(125% 80% at 50% -5%, #5A3580 0%, #341C50 60%, #241338 100%);

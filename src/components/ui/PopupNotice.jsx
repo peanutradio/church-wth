@@ -21,7 +21,8 @@ const PopupNotice = () => {
     // Hide dates
     // 캠프(2026.10.30~11.01) 신청은 10/29까지 → 10/30부터 자동 숨김
     const CAMP_HIDE_DATE = new Date('2026-10-30T00:00:00');
-    const MEMBER_REG_HIDE_DATE = new Date('2026-08-01T00:00:00');
+    // 새가족 등록: 8월 첫째주(8/2 주일~8/8 토)까지 노출 → 8/9부터 자동 숨김
+    const MEMBER_REG_HIDE_DATE = new Date('2026-08-09T00:00:00');
     const CHRISTMAS_HIDE_DATE = new Date('2025-12-26T00:00:00');
     const ENDDAY_HIDE_DATE = new Date('2026-01-01T00:00:00');
     const TAX_HIDE_DATE = new Date('2026-01-16T00:00:00');

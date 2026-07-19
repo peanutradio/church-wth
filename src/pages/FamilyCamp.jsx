@@ -5,14 +5,24 @@ import { supabase } from '../lib/supabaseClient';
 // - 포스터 톤(크림/테라코타/네이비)에 맞춘 디자인
 // - 참가자 명단을 연령대와 함께 받아 참가비를 자동 계산합니다.
 
+// DB에 한글 그대로 저장합니다 (명부를 전처리 없이 바로 쓰기 위해)
 const AGE_GROUPS = [
-    { value: 'adult', label: '성인', fee: 30000 },
-    { value: 'youth', label: '중고등', fee: 20000 },
-    { value: 'elementary', label: '초등', fee: 10000 },
-    { value: 'preschool', label: '미취학', fee: 10000 },
+    { value: '성인', fee: 30000 },
+    { value: '중고등', fee: 20000 },
+    { value: '초등', fee: 10000 },
+    { value: '미취학', fee: 10000 },
 ];
 
 const FEE_OF = AGE_GROUPS.reduce((acc, g) => ({ ...acc, [g.value]: g.fee }), {});
+
+// 한 가족의 신청을 묶는 키 (구형 브라우저 대비 fallback 포함)
+const makeUUID = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+};
 const ACCOUNT = '신한은행 140-015-516800 위더처치교회';
 const BRICKS = ['#C0622E', '#E8CBA8', '#4A6B52', '#9C5B33', '#D89A63', '#7A4B2A', '#C0622E', '#E8CBA8'];
 
@@ -43,7 +53,7 @@ const inputClass =
 const FamilyCamp = () => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
-    const [members, setMembers] = useState([{ key: 1, name: '', age_group: 'adult' }]);
+    const [members, setMembers] = useState([{ key: 1, name: '', age_group: '성인' }]);
     const [transport, setTransport] = useState('');
     const [pickup, setPickup] = useState(false);
     const [allergy, setAllergy] = useState('');
@@ -68,7 +78,7 @@ const FamilyCamp = () => {
 
     // ── 참가자 명단 ──
     const addMember = () =>
-        setMembers((prev) => [...prev, { key: Date.now(), name: '', age_group: 'adult' }]);
+        setMembers((prev) => [...prev, { key: Date.now(), name: '', age_group: '성인' }]);
 
     const removeMember = (key) =>
         setMembers((prev) => (prev.length > 1 ? prev.filter((m) => m.key !== key) : prev));
@@ -78,8 +88,8 @@ const FamilyCamp = () => {
 
     // ── 자동 집계 ──
     const counts = members.reduce(
-        (acc, m) => ({ ...acc, [m.age_group]: acc[m.age_group] + 1 }),
-        { adult: 0, youth: 0, elementary: 0, preschool: 0 }
+        (acc, m) => ({ ...acc, [m.age_group]: (acc[m.age_group] || 0) + 1 }),
+        {}
     );
     const totalFee = members.reduce((sum, m) => sum + (FEE_OF[m.age_group] || 0), 0);
 
@@ -103,22 +113,24 @@ const FamilyCamp = () => {
 
         setLoading(true);
         try {
-            const { error } = await supabase.from('camp_applications').insert({
-                name: name.trim(),
+            // 참가자 1명당 1행으로 저장 (같은 가족은 application_id로 묶임)
+            const applicationId = makeUUID();
+            const rows = members.map((m, idx) => ({
+                application_id: applicationId,
+                applicant_name: name.trim(),
+                participant_name: m.name.trim(),
+                relation: idx === 0 ? '본인' : '가족',
+                age_group: m.age_group,
+                fee: FEE_OF[m.age_group] || 0,
                 phone,
-                total_count: members.length,
-                members: members.map(({ name, age_group }) => ({ name: name.trim(), age_group })),
-                adult_count: counts.adult,
-                youth_count: counts.youth,
-                elementary_count: counts.elementary,
-                preschool_count: counts.preschool,
-                total_fee: totalFee,
-                transport,
+                transport: transport === 'car' ? '개인차량' : '대중교통',
                 pickup_needed: transport === 'public' ? pickup : false,
                 allergy: allergy.trim() || null,
                 request: request.trim() || null,
                 privacy_agreed: true,
-            });
+            }));
+
+            const { error } = await supabase.from('camp_applications').insert(rows);
 
             if (error) throw error;
             setSubmitted(true);
@@ -245,7 +257,7 @@ const FamilyCamp = () => {
                                     >
                                         {AGE_GROUPS.map((g) => (
                                             <option key={g.value} value={g.value}>
-                                                {g.label}
+                                                {g.value}
                                             </option>
                                         ))}
                                     </select>
@@ -275,8 +287,7 @@ const FamilyCamp = () => {
                                 총 <strong className="text-[#22355B]">{members.length}</strong>명
                                 <span className="text-[#B0A491]">
                                     {' '}
-                                    (성인 {counts.adult} · 중고등 {counts.youth} · 초등 {counts.elementary} · 미취학{' '}
-                                    {counts.preschool})
+                                    ({AGE_GROUPS.map((g) => `${g.value} ${counts[g.value] || 0}`).join(' · ')})
                                 </span>
                             </span>
                         </div>
@@ -361,7 +372,7 @@ const FamilyCamp = () => {
                                 {AGE_GROUPS.filter((g) => counts[g.value] > 0).map((g) => (
                                     <div key={g.value} className="flex justify-between text-[#6B6255]">
                                         <span>
-                                            {g.label} {counts[g.value]}명 × {g.fee.toLocaleString()}원
+                                            {g.value} {counts[g.value]}명 × {g.fee.toLocaleString()}원
                                         </span>
                                         <span>{(counts[g.value] * g.fee).toLocaleString()}원</span>
                                     </div>
